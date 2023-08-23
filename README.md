@@ -1,2 +1,2 @@
-# CxSC
-Ferramentas utilizadas nas análises de vulnerabilidades do Centro de Segurança Cibernética do INATEL. 
+# CxSC Telecom - Centro de Segurança Cibernética
+Ferramentas utilizadas nas análises de vulnerabilidades. 
