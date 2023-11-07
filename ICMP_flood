@@ -1,0 +1,43 @@
+import threading
+import time
+from scapy.layers.inet import IP, ICMP
+from scapy.sendrecv import sr1
+
+class ICMPCounter:
+    def __init__(self):
+        self.received_count = 0
+
+    def send_icmp_request(self, target_ip):
+        packet = IP(dst=target_ip) / ICMP()
+        response = sr1(packet, timeout=1, verbose=False)
+        if response is not None:
+            self.received_count += 1
+
+def send_icmp_requests(target_ip, count):
+    icmp_counter = ICMPCounter()
+    start_time = time.time()
+
+    threads = []
+
+    for _ in range(count):
+        thread = threading.Thread(target=icmp_counter.send_icmp_request, args=(target_ip,))
+        thread.start()
+        threads.append(thread)
+
+    for thread in threads:
+        thread.join()
+
+    end_time = time.time()
+    elapsed_time = end_time - start_time
+
+    return icmp_counter.received_count, elapsed_time
+
+if __name__ == "__main__":
+    target_ip = "192.168.0.1"
+    count = 200
+
+    received_count, elapsed_time = send_icmp_requests(target_ip, count)
+
+    print(f"Received {received_count}/{count} responses from {target_ip} in {elapsed_time:.2f} seconds")
+
+
